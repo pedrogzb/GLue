@@ -3,11 +3,12 @@
 #include <iostream>
 
 void SetFramebufferSizeCallback(GLFWwindow* window, int width, int height);
+void proccessInput(GLFWwindow* window);
 
 int main() {
 
-	const int HEIGHT = 800;
-	const int WIDTH  = 600;
+	const int HEIGHT = 600;
+	const int WIDTH  = 800;
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -29,6 +30,11 @@ int main() {
 	}
 
 	while (!glfwWindowShouldClose(window)) {
+
+		proccessInput(window);
+
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -40,4 +46,10 @@ int main() {
 void SetFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
+void proccessInput(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, true);
+	}
+}
+
 
