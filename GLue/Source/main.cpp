@@ -27,6 +27,13 @@ int main() {
 		std::cout << "No se ha podido incializar GLAD" << std::endl;
 		return -1;
 	}
+
+	while (!glfwWindowShouldClose(window)) {
+		
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+	glfwTerminate();
 	return 0;
 }
 
