@@ -84,18 +84,29 @@ int main() {
 
 	/*Preparando los vertices y estructuras*/
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		 0.5f, -0.5f, 0.0f,
-		 0.5f,  0.5f, 0.0f
+		-0.5f, -0.5f, 0.0f, 
+		 0.5f, -0.5f, 0.0f, 
+		 0.0f,  0.5f, 0.0f  
 	};
 
-	unsigned int VBO;
+	unsigned int VBO, VAO;
+	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
+	//Se realiza el bind de VAO para que en las siguientes llamadas de la configuración del VBO
+	//se quenden guardadas en esta
+	glBindVertexArray(VAO);
+
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	//Se realiza un unbind del VBO para indicar que se ha terminado su configuración
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//Se realiza lo mismo para el VAO para que no haya ninguna interferencia si se configuran
+	//otros VAO después.
+	glBindVertexArray(0);
 	
 
 	/*Loop en el que se realizan la operaciones de visualización*/
@@ -105,11 +116,18 @@ int main() {
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		glUseProgram(programShader);
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 	/*Terminación del programa y liberar recursos*/
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteProgram(programShader);
 	glfwTerminate();
 	return 0;
 }
