@@ -84,26 +84,30 @@ int main() {
 
 	/*Preparando los vertices y estructuras*/
 	float vertices[] = {
-		//Triangulo 1
 		-0.5f, -0.5f, 0.0f, //Inf.Izq.	 
 		 0.5f, -0.5f, 0.0f, //Inf.Dcha.
 		-0.5f,  0.5f, 0.0f,	//Sup.Izq.
-		//Triangulo 2
-		-0.5f,  0.5f, 0.0f, //Sup.Izq.
-		 0.5f, -0.5f, 0.0f, //Inf.Dcha.
-		 0.5f,  0.5f, 0.0f, //Sup.Dcha.
-
+		 0.5f,  0.5f, 0.0f  //Sup.Dcha.
+	};
+	unsigned int indices[] = {
+		//Triangulo 1
+		0, 1, 2,
+		1, 2, 3
 	};
 
-	unsigned int VBO, VAO;
+	unsigned int VBO, VAO, EBO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 	//Se realiza el bind de VAO para que en las siguientes llamadas de la configuración del VBO
 	//se quenden guardadas en esta
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -124,7 +128,7 @@ int main() {
 
 		glUseProgram(programShader);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -132,6 +136,7 @@ int main() {
 	/*Terminación del programa y liberar recursos*/
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 	glDeleteProgram(programShader);
 	glfwTerminate();
 	return 0;
