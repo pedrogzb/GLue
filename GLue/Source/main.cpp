@@ -79,6 +79,9 @@ int main() {
 		glGetProgramInfoLog(programShader, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 	}
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
 	/*Preparando los vertices y estructuras*/
 	float vertices[] = {
 		-0.5f, -0.5f, 0.0f,
