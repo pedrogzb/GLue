@@ -83,31 +83,26 @@ int main() {
 	glDeleteShader(fragmentShader);
 
 	/*Preparando los vertices y estructuras*/
-	float vertices[] = {
-		-0.5f, -0.5f, 0.0f, //Inf.Izq.	 
-		 0.5f, -0.5f, 0.0f, //Inf.Dcha.
-		-0.5f,  0.5f, 0.0f,	//Sup.Izq.
-		 0.5f,  0.5f, 0.0f  //Sup.Dcha.
+	float vertices1[] = {
+		-0.9f, -0.5f, 0.0f, //Inf.Izq.	 
+		-0.0f, -0.5f, 0.0f, //Inf.Dcha.
+		-0.45f, 0.5f, 0.0f,	//Sup.
 	};
-	unsigned int indices[] = {
-		//Triangulo 1
-		0, 1, 2,
-		1, 2, 3
+	float vertices2[] = {
+		 0.0f, -0.5f, 0.0f, //Inf.Izq.	 
+		 0.9f, -0.5f, 0.0f, //Inf.Dcha.
+		 0.45f, 0.5f, 0.0f,	//Sup.
 	};
 
-	unsigned int VBO, VAO, EBO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	unsigned int VBO1, VAO1;
+	glGenVertexArrays(1, &VAO1);
+	glGenBuffers(1, &VBO1);
 	//Se realiza el bind de VAO para que en las siguientes llamadas de la configuración del VBO
 	//se quenden guardadas en esta
-	glBindVertexArray(VAO);
+	glBindVertexArray(VAO1);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO1);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -116,6 +111,20 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//Se realiza lo mismo para el VAO para que no haya ninguna interferencia si se configuran
 	//otros VAO después.
+	glBindVertexArray(0);
+
+	unsigned int VBO2, VAO2;
+	glGenVertexArrays(1, &VAO2);
+	glGenBuffers(1, &VBO2);
+
+	glBindVertexArray(VAO2);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	
 	/*Loop en el que se realizan la operaciones de visualización*/
@@ -127,16 +136,20 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(programShader);
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
+		glBindVertexArray(VAO1);
+		glDrawArrays(GL_TRIANGLES,0,3);
+
+		glBindVertexArray(VAO2);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 	/*Terminación del programa y liberar recursos*/
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
+	glDeleteVertexArrays(1, &VAO1);
+	glDeleteBuffers(1, &VBO1);
+	glDeleteVertexArrays(1, &VAO2);
+	glDeleteBuffers(1, &VBO2);
 	glDeleteProgram(programShader);
 	glfwTerminate();
 	return 0;
