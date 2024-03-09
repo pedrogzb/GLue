@@ -94,14 +94,14 @@ int main() {
 		 0.45f, 0.5f, 0.0f,	//Sup.
 	};
 
-	unsigned int VBO1, VAO1;
-	glGenVertexArrays(1, &VAO1);
-	glGenBuffers(1, &VBO1);
+	unsigned int VBOs[2], VAOs[2];
+	glGenVertexArrays(2, VAOs);
+	glGenBuffers(2, VBOs);
 	//Se realiza el bind de VAO para que en las siguientes llamadas de la configuración del VBO
 	//se quenden guardadas en esta
-	glBindVertexArray(VAO1);
+	glBindVertexArray(VAOs[0]);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO1);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
@@ -113,13 +113,9 @@ int main() {
 	//otros VAO después.
 	glBindVertexArray(0);
 
-	unsigned int VBO2, VAO2;
-	glGenVertexArrays(1, &VAO2);
-	glGenBuffers(1, &VBO2);
+	glBindVertexArray(VAOs[1]);
 
-	glBindVertexArray(VAO2);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
@@ -136,20 +132,18 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(programShader);
-		glBindVertexArray(VAO1);
+		glBindVertexArray(VAOs[0]);
 		glDrawArrays(GL_TRIANGLES,0,3);
 
-		glBindVertexArray(VAO2);
+		glBindVertexArray(VAOs[1]);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 	/*Terminación del programa y liberar recursos*/
-	glDeleteVertexArrays(1, &VAO1);
-	glDeleteBuffers(1, &VBO1);
-	glDeleteVertexArrays(1, &VAO2);
-	glDeleteBuffers(1, &VBO2);
+	glDeleteVertexArrays(2, VAOs);
+	glDeleteBuffers(2, VBOs);
 	glDeleteProgram(programShader);
 	glfwTerminate();
 	return 0;
