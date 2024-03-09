@@ -84,9 +84,15 @@ int main() {
 
 	/*Preparando los vertices y estructuras*/
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f, 
-		 0.5f, -0.5f, 0.0f, 
-		 0.0f,  0.5f, 0.0f  
+		//Triangulo 1
+		-0.5f, -0.5f, 0.0f, //Inf.Izq.	 
+		 0.5f, -0.5f, 0.0f, //Inf.Dcha.
+		-0.5f,  0.5f, 0.0f,	//Sup.Izq.
+		//Triangulo 2
+		-0.5f,  0.5f, 0.0f, //Sup.Izq.
+		 0.5f, -0.5f, 0.0f, //Inf.Dcha.
+		 0.5f,  0.5f, 0.0f, //Sup.Dcha.
+
 	};
 
 	unsigned int VBO, VAO;
@@ -108,7 +114,6 @@ int main() {
 	//otros VAO después.
 	glBindVertexArray(0);
 	
-
 	/*Loop en el que se realizan la operaciones de visualización*/
 	while (!glfwWindowShouldClose(window)) {
 
@@ -119,7 +124,7 @@ int main() {
 
 		glUseProgram(programShader);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -138,6 +143,12 @@ void SetFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
 void proccessInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
+	}
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 }
 
