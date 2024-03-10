@@ -72,12 +72,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\GLAD\include;C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\glfw-3.4.bin.WIN64\lib-vc2022;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\GLAD\include;C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\glfw-3.4.bin.WIN64\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\Source\Include;C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\GLAD\include;C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\glfw-3.4.bin.WIN64\include;$(IncludePath)</IncludePath>
     <SourcePath>C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\GLAD\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\GLAD\include;C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\glfw-3.4.bin.WIN64\lib-vc2022;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\GLAD\include;C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\glfw-3.4.bin.WIN64\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\Source\Include;C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\GLAD\include;C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\glfw-3.4.bin.WIN64\include;$(IncludePath)</IncludePath>
     <SourcePath>C:\Users\pegon\Documents\Proyectos CG\GLue\GLue\LibExternas\GLAD\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -146,6 +146,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LibExternas\GLAD\include\glad\glad.h" />
+    <ClInclude Include="Source\Include\Shader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Shaders\Fragment.glsl" />
+    <None Include="Source\Shaders\Vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

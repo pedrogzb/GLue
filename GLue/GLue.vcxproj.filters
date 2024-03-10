@@ -26,5 +26,12 @@
     <ClInclude Include="LibExternas\GLAD\include\glad\glad.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Include\Shader.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Shaders\Fragment.glsl" />
+    <None Include="Source\Shaders\Vertex.glsl" />
   </ItemGroup>
 </Project>
