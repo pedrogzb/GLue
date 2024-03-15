@@ -40,9 +40,9 @@ int main() {
 	float vertices[] = {
 		//posición			//color			  //coord. tex.	
 		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Inf.Izq
-		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, //Inf.Dcha
-		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, //Sup.Izq
-		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f  //Sup.Dcha
+		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 2.0f, 0.0f, //Inf.Dcha
+		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 2.0f, //Sup.Izq
+		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 2.0f, 2.0f  //Sup.Dcha
 	};
 	int indices[] = {
 		0, 1, 2,
@@ -80,8 +80,8 @@ int main() {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture1);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
