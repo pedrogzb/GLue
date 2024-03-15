@@ -8,11 +8,13 @@
 
 void SetFramebufferSizeCallback(GLFWwindow* window, int width, int height);
 void proccessInput(GLFWwindow* window);
+float mix_val = 0.5;
 
 int main() {
 
 	const int HEIGHT = 600;
 	const int WIDTH  = 800;
+
 	/*Iniciacion del contexto de las librerias GLFW y GLAD y Creación de ventana*/
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -39,10 +41,10 @@ int main() {
 	/*Preparando los vertices y estructuras*/
 	float vertices[] = {
 		//posición			//color			  //coord. tex.	
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.45f, 0.45f, //Inf.Izq
-		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.55f, 0.45f, //Inf.Dcha
-		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.45f, 0.55f, //Sup.Izq
-		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.55f, 0.55f  //Sup.Dcha
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Inf.Izq
+		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, //Inf.Dcha
+		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, //Sup.Izq
+		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f  //Sup.Dcha
 	};
 	int indices[] = {
 		0, 1, 2,
@@ -104,8 +106,8 @@ int main() {
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	data = stbi_load("Source/Textures/awesomeface.png", &width, &height, &nrChannels, 0);
 
@@ -140,6 +142,11 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
+		
+		
+		shader.setFloat("mix_val", mix_val);
+
+		shader.use();
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
 		
@@ -166,6 +173,12 @@ void proccessInput(GLFWwindow* window) {
 	}
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		mix_val = std::min(1.0f, mix_val + 0.001f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		mix_val = std::max(0.0f, mix_val - 0.001f);
 	}
 }
 
