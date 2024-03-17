@@ -5,6 +5,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
 
 void SetFramebufferSizeCallback(GLFWwindow* window, int width, int height);
 void proccessInput(GLFWwindow* window);
@@ -130,6 +135,13 @@ int main() {
 	shader.use();
 	shader.setInt("texture1", 0);
 	shader.setInt("texture2", 1);
+	/*Generación de la matriz de tranformacin*/
+	glm::mat4 trans = glm::mat4(1.0);
+	trans = glm::rotate(trans,glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+
+	unsigned int transformationLoc = glGetUniformLocation(shader.ID,"transform");
+	glUniformMatrix4fv(transformationLoc, 1, GL_FALSE, glm::value_ptr(trans));
 	/*Loop en el que se realizan la operaciones de visualización*/
 	while (!glfwWindowShouldClose(window)) {
 
@@ -143,7 +155,13 @@ int main() {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		
-		
+		/*Generación de la matriz de tranformacin*/
+		glm::mat4 trans = glm::mat4(1.0);
+		trans = glm::translate(trans, glm::vec3(0.5f, 0.5f, 0.0f));
+		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		unsigned int transformationLoc = glGetUniformLocation(shader.ID, "transform");
+		glUniformMatrix4fv(transformationLoc, 1, GL_FALSE, glm::value_ptr(trans));
 		shader.setFloat("mix_val", mix_val);
 
 		shader.use();
@@ -175,10 +193,10 @@ void proccessInput(GLFWwindow* window) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		mix_val = std::min(1.0f, mix_val + 0.001f);
+		mix_val = std::min(1.0f, mix_val + 0.003f);
 	}
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		mix_val = std::max(0.0f, mix_val - 0.001f);
+		mix_val = std::max(0.0f, mix_val - 0.003f);
 	}
 }
 
