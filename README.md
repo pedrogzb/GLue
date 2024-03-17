@@ -11,4 +11,7 @@ url original -> https://www.glfw.org/
 **STBI :** Librería que sirve para gestionar la lectura de imagenes. 
 url original ->https://github.com/nothings/stb/blob/master/stb_image.h
 
+**GLM :** Librería para realizar operaciones matemáticas de algebra lineal. 
+url original -> https://glm.g-truc.net/0.9.8/index.html
+
 
