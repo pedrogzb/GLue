@@ -51,10 +51,10 @@ int main() {
 		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, //Sup.Izq
 		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f  //Sup.Dcha
 	};
+	
 	int indices[] = {
 		0, 1, 2,
 		2, 1, 3, 
-
 	};
 
 	unsigned int VBO, VAO, EBO;
@@ -135,13 +135,23 @@ int main() {
 	shader.use();
 	shader.setInt("texture1", 0);
 	shader.setInt("texture2", 1);
-	/*Generación de la matriz de tranformacin*/
-	glm::mat4 trans = glm::mat4(1.0);
-	trans = glm::rotate(trans,glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+	/*Generación de las matrices de tranformacin*/
+	glm::mat4 model = glm::mat4(1.0);
+	model = glm::rotate(model,glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	unsigned int modelTransLoc = glGetUniformLocation(shader.ID, "model");
+	glUniformMatrix4fv(modelTransLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-	unsigned int transformationLoc = glGetUniformLocation(shader.ID,"transform");
-	glUniformMatrix4fv(transformationLoc, 1, GL_FALSE, glm::value_ptr(trans));
+	glm::mat4 view = glm::mat4(1.0);
+	view = glm::translate(view,glm::vec3(0.0f, 0.0f, -3.0f));
+	unsigned int viewTransLoc = glGetUniformLocation(shader.ID,"view");
+	glUniformMatrix4fv(viewTransLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+	glm::mat4 proyection;
+	proyection = glm::perspective(glm::radians(45.0f), ((float)WIDTH) / ((float)HEIGHT),0.01f,100.f);
+	unsigned int proyectionTransLoc = glGetUniformLocation(shader.ID, "proyection");
+	glUniformMatrix4fv(proyectionTransLoc, 1, GL_FALSE, glm::value_ptr(proyection));
+
+
 	/*Loop en el que se realizan la operaciones de visualización*/
 	while (!glfwWindowShouldClose(window)) {
 
@@ -156,12 +166,21 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		
 		/*Generación de la matriz de tranformacin*/
-		glm::mat4 trans = glm::mat4(1.0);
-		trans = glm::translate(trans, glm::vec3(0.5f, 0.5f, 0.0f));
-		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::mat4 model = glm::mat4(1.0);
+		model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		unsigned int modelTransLoc = glGetUniformLocation(shader.ID, "model");
+		glUniformMatrix4fv(modelTransLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-		unsigned int transformationLoc = glGetUniformLocation(shader.ID, "transform");
-		glUniformMatrix4fv(transformationLoc, 1, GL_FALSE, glm::value_ptr(trans));
+		glm::mat4 view = glm::mat4(1.0);
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		unsigned int viewTransLoc = glGetUniformLocation(shader.ID, "view");
+		glUniformMatrix4fv(viewTransLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+		glm::mat4 proyection;
+		proyection = glm::perspective(glm::radians(45.0f), ((float)WIDTH) / ((float)HEIGHT), 0.01f, 100.f);
+		unsigned int proyectionTransLoc = glGetUniformLocation(shader.ID, "proyection");
+		glUniformMatrix4fv(proyectionTransLoc, 1, GL_FALSE, glm::value_ptr(proyection));
+
 		shader.setFloat("mix_val", mix_val);
 
 		shader.use();
