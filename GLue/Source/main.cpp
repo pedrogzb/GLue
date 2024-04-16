@@ -13,7 +13,7 @@
 
 void SetFramebufferSizeCallback(GLFWwindow* window, int width, int height);
 void proccessInput(GLFWwindow* window);
-float mix_val = 0.5;
+float mix_val = 0.01f;
 
 int main() {
 
@@ -45,16 +45,47 @@ int main() {
 
 	/*Preparando los vertices y estructuras*/
 	float vertices[] = {
-		//posición			//color			  //coord. tex.	
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Inf.Izq
-		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, //Inf.Dcha
-		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, //Sup.Izq
-		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f  //Sup.Dcha
-	};
-	
-	int indices[] = {
-		0, 1, 2,
-		2, 1, 3, 
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
 	unsigned int VBO, VAO, EBO;
@@ -68,17 +99,11 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 	
 	stbi_set_flip_vertically_on_load(true);
 
@@ -117,7 +142,7 @@ int main() {
 	data = stbi_load("Source/Textures/awesomeface.png", &width, &height, &nrChannels, 0);
 
 	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else {
@@ -135,30 +160,15 @@ int main() {
 	shader.use();
 	shader.setInt("texture1", 0);
 	shader.setInt("texture2", 1);
-	/*Generación de las matrices de tranformacin*/
-	glm::mat4 model = glm::mat4(1.0);
-	model = glm::rotate(model,glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	unsigned int modelTransLoc = glGetUniformLocation(shader.ID, "model");
-	glUniformMatrix4fv(modelTransLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-	glm::mat4 view = glm::mat4(1.0);
-	view = glm::translate(view,glm::vec3(0.0f, 0.0f, -3.0f));
-	unsigned int viewTransLoc = glGetUniformLocation(shader.ID,"view");
-	glUniformMatrix4fv(viewTransLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-	glm::mat4 proyection;
-	proyection = glm::perspective(glm::radians(45.0f), ((float)WIDTH) / ((float)HEIGHT),0.01f,100.f);
-	unsigned int proyectionTransLoc = glGetUniformLocation(shader.ID, "proyection");
-	glUniformMatrix4fv(proyectionTransLoc, 1, GL_FALSE, glm::value_ptr(proyection));
-
-
+	glEnable(GL_DEPTH_TEST);
 	/*Loop en el que se realizan la operaciones de visualización*/
 	while (!glfwWindowShouldClose(window)) {
 
 		proccessInput(window);
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
@@ -167,7 +177,7 @@ int main() {
 		
 		/*Generación de la matriz de tranformacin*/
 		glm::mat4 model = glm::mat4(1.0);
-		model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 		unsigned int modelTransLoc = glGetUniformLocation(shader.ID, "model");
 		glUniformMatrix4fv(modelTransLoc, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -185,7 +195,7 @@ int main() {
 
 		shader.use();
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
+		glDrawArrays(GL_TRIANGLES,0,36);
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
