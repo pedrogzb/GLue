@@ -14,6 +14,11 @@
 void SetFramebufferSizeCallback(GLFWwindow* window, int width, int height);
 void proccessInput(GLFWwindow* window);
 float mix_val = 0.01f;
+glm::vec3 camPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 camUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 
 int main() {
 
@@ -187,8 +192,8 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		
 		/*Generación de la matriz de tranformacin*/
-		glm::mat4 view = glm::mat4(1.0);
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		glm::mat4 view;
+		view = glm::lookAt(camPos, camPos+camFront, camUp);
 		unsigned int viewTransLoc = glGetUniformLocation(shader.ID, "view");
 		glUniformMatrix4fv(viewTransLoc, 1, GL_FALSE, glm::value_ptr(view));
 
@@ -230,17 +235,30 @@ void proccessInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+	float currFrame = glfwGetTime();
+	deltaTime = currFrame - lastFrame;
+	lastFrame = currFrame;
+	const float cameraSpeed = 2.5f*deltaTime; // adjust accordingly
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		camPos += cameraSpeed * camFront;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		camPos -= cameraSpeed * camFront;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camPos -= glm::normalize(glm::cross(camFront, camUp)) * cameraSpeed;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camPos += glm::normalize(glm::cross(camFront, camUp)) * cameraSpeed;
+
+	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		mix_val = std::min(1.0f, mix_val + 0.003f);
+		mix_val = std::min(1.0f, mix_val + 0.3f * deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		mix_val = std::max(0.0f, mix_val - 0.003f);
+		mix_val = std::max(0.0f, mix_val - 0.3f * deltaTime);
 	}
 }
 
