@@ -4,9 +4,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <Camera.h>
 #include <glm/gtc/type_ptr.hpp>
 
 
@@ -21,18 +19,12 @@ const unsigned int WIDTH  = 800;
 
 float mix_val = 0.01f;
 
-glm::vec3 camPos   = glm::vec3(0.0f, 0.0f,  3.0f);
-glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 camUp    = glm::vec3(0.0f, 1.0f,  0.0f);
-
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 bool firstMouse = true;
 float lastX = 400.0f, lastY = 300.0f;
-float yaw = -90.0f;
-float pitch = 0.0f;
-float fov = 45.0f;
+Camera cam;
 
 int main() {
 	/*Iniciacion del contexto de las librerias GLFW y GLAD y Creación de ventana*/
@@ -149,7 +141,7 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int width, height, nrChannels;
-	unsigned char* data = stbi_load("Source/Textures/container.jpg", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load("Source/Textures/ShinjiGL.jpg", &width, &height, &nrChannels, 0);
 
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -205,11 +197,11 @@ int main() {
 		shader.use();
 
 		/*Generación de la matriz de tranformacin*/
-		glm::mat4 view = glm::lookAt(camPos, camPos+camFront, camUp);
+		glm::mat4 view = cam.GetViewMatrix();
 		unsigned int viewTransLoc = glGetUniformLocation(shader.ID, "view");
 		glUniformMatrix4fv(viewTransLoc, 1, GL_FALSE, glm::value_ptr(view));
 		
-		glm::mat4 proyection = glm::perspective(glm::radians(fov), ((float)WIDTH) / ((float)HEIGHT), 0.01f, 100.f);
+		glm::mat4 proyection = glm::perspective(glm::radians(cam.Zoom), ((float)WIDTH) / ((float)HEIGHT), 0.01f, 100.f);
 		unsigned int proyectionTransLoc = glGetUniformLocation(shader.ID, "proyection");
 		glUniformMatrix4fv(proyectionTransLoc, 1, GL_FALSE, glm::value_ptr(proyection));
 
@@ -246,15 +238,14 @@ void proccessInput(GLFWwindow* window) {
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	const float cameraSpeed = static_cast<float>(4.0 * deltaTime); // adjust accordingly
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camPos += cameraSpeed * camFront;
+		cam.ProcessKeyboard(Camera_Movement::FORWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camPos -= cameraSpeed * camFront;
+		cam.ProcessKeyboard(Camera_Movement::BACKWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		camPos -= glm::normalize(glm::cross(camFront, camUp)) * cameraSpeed;
+		cam.ProcessKeyboard(Camera_Movement::LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		camPos += glm::normalize(glm::cross(camFront, camUp)) * cameraSpeed;
+		cam.ProcessKeyboard(Camera_Movement::RIGHT, deltaTime);
 
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -285,29 +276,9 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
 	lastX = xpos;
 	lastY = ypos;
 
-	float sensitivity = 0.1f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-
-	yaw += xoffset;
-	pitch += yoffset;
-
-	if (pitch > 89.0f)
-		pitch = 89.0f;
-	if (pitch < -89.0f)
-		pitch = -89.0f;
-
-	glm::vec3 direction;
-	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	direction.y = sin(glm::radians(pitch));
-	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	camFront = glm::normalize(direction);
+	cam.ProcessMouseMovement(static_cast<float>(xoffset), static_cast<float>(yoffset), true);
 }
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-	fov -= (float)yoffset;
-	if (fov < 1.0f)
-		fov = 1.0f;
-	if (fov > 45.0f)
-		fov = 45.0f;
+	cam.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
