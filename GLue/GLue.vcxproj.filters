@@ -39,5 +39,7 @@
   <ItemGroup>
     <None Include="Source\Shaders\Fragment.glsl" />
     <None Include="Source\Shaders\Vertex.glsl" />
+    <None Include="Source\Shaders\fUI.glsl" />
+    <None Include="Source\Shaders\vUI.glsl" />
   </ItemGroup>
 </Project>

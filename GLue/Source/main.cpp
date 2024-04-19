@@ -22,6 +22,10 @@ float mix_val = 0.01f;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+float LastFrame0 = 0.0f;
+int	  CountFrames =   0;
+float FrameRate = 0.0f;
+
 bool firstMouse = true;
 float lastX = 400.0f, lastY = 300.0f;
 Camera cam;
@@ -55,6 +59,8 @@ int main() {
 	/*Utilizacion de la clase codificada Shader*/
 	Shader shader = Shader("Source/Shaders/Vertex.glsl",
 		                   "Source/Shaders/Fragment.glsl");
+	Shader sUI	  = Shader("Source/Shaders/vUI.glsl",
+						   "Source/Shaders/fUI.glsl");
 
 	/*Preparando los vertices y estructuras*/
 	float vertices[] = {
@@ -127,6 +133,38 @@ int main() {
 
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+
+	/*Preparar los vertices de la UI*/
+	//float vUI[] = {
+	//	-1.0f, -0.5f, 0.0f,  0.0f, 0.0f,
+	//	 1.0f, -0.5f, 0.0f,  1.0f, 0.0f,
+	//	 1.0f,  0.5f, 0.0f,  1.0f, 1.0f,
+	//	 1.0f,  0.5f, 0.0f,  1.0f, 1.0f,
+	//	-1.0f,  0.5f, 0.0f,  0.0f, 1.0f,
+	//	-1.0f, -0.5f, 0.0f,  0.0f, 0.0f,
+	//};
+	float vUI[] = {
+	 0.8f,  0.9f, 0.0f,  0.0f, 0.0f,
+	 1.0f,  0.9f, 0.0f,  1.0f, 0.0f,
+	 1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+	 1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+	 0.8f,  1.0f, 0.0f,  0.0f, 1.0f,
+	 0.8f,  0.9f, 0.0f,  0.0f, 0.0f,
+	};
+	unsigned int VBO_UI, VAO_UI;
+	glGenVertexArrays(1, &VAO_UI);
+	glGenBuffers(1, &VBO_UI);
+	glBindVertexArray(VAO_UI);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_UI);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vUI), vUI, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	/**********************************************************************************************/
 	
 	stbi_set_flip_vertically_on_load(true);
 
@@ -183,6 +221,11 @@ int main() {
 		float currFrame = static_cast<float>(glfwGetTime());
 		deltaTime = currFrame - lastFrame;
 		lastFrame = currFrame;
+		if (currFrame - LastFrame0 > 1.0f) {
+			FrameRate = CountFrames + 1.0f / (currFrame - LastFrame0);
+			CountFrames = 0;
+			LastFrame0 = currFrame;
+		}else ++CountFrames;
 
 		proccessInput(window);
 
@@ -218,6 +261,11 @@ int main() {
 			glUniformMatrix4fv(modelTransLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
+		sUI.use();
+		sUI.setFloat("FrameRate", FrameRate);
+		sUI.setInt("opcion", 6);
+		glBindVertexArray(VAO_UI);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 				
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -226,6 +274,9 @@ int main() {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteProgram(shader.ID);
+	glDeleteVertexArrays(1, &VAO_UI);
+	glDeleteBuffers(1, &VBO_UI);
+	glDeleteProgram(sUI.ID);
 	glfwTerminate();
 	return 0;
 }
