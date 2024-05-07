@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="LibExternas\GLAD\include\glad\glad.h" />
     <ClInclude Include="Source\Include\Camera.h" />
+    <ClInclude Include="Source\Include\GameObject.h" />
     <ClInclude Include="Source\Include\Shader.h" />
     <ClInclude Include="Source\Include\stb_image.h" />
   </ItemGroup>

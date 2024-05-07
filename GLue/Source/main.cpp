@@ -6,6 +6,7 @@
 #include <stb_image.h>
 #include <Camera.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <GameObject.h>
 
 
 
@@ -53,7 +54,12 @@ int main() {
 		std::cout << "No se ha podido incializar GLAD" << std::endl;
 		return -1;
 	}
-
+	std::cout << DEFAULT_CUBE[10] << std::endl;
+	{
+		GameObject go = GameObject();
+		std::cout << DEFAULT_CUBE[10] << std::endl;
+	}
+	std::cout << DEFAULT_CUBE[10] << std::endl;
 	glEnable(GL_DEPTH_TEST);
 
 	/*Utilizacion de la clase codificada Shader*/

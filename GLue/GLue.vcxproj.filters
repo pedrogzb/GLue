@@ -35,6 +35,9 @@
     <ClInclude Include="Source\Include\Camera.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Include\GameObject.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Shaders\Fragment.glsl" />
