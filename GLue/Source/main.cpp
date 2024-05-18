@@ -227,6 +227,10 @@ void proccessInput(GLFWwindow* window) {
 		cam.ProcessKeyboard(Camera_Movement::LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		cam.ProcessKeyboard(Camera_Movement::RIGHT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		cam.ProcessKeyboard(Camera_Movement::UP, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		cam.ProcessKeyboard(Camera_Movement::DOWN, deltaTime);
 
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

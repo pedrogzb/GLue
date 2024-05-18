@@ -10,54 +10,16 @@ class GameObject{
 public:
 	glm::vec3 Transform;
 	glm::vec3 Rotation;
-	std::vector<float> vertices;
+	std::vector<float> data;
 	unsigned int VBO, VAO;
 	GameObject(glm::vec3 transform, glm::vec3 rotation): Transform(transform), Rotation(rotation) {
 		//std::cout << "Hola se ha construido este objeto" << std::endl;
-		vertices = {
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-		};
 		
+		data = std::vector<float>(sizeof(DEFAULT_PIRAMID) / sizeof(float), 0);
+		for (int i = 0; i < static_cast<int>(data.size()); ++i) {
+			data[i] = DEFAULT_PIRAMID[i];
+		}
+
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
 		//Se realiza el bind de VAO para que en las siguientes llamadas de la configuración del VBO
@@ -65,7 +27,7 @@ public:
 		glBindVertexArray(VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * data.size(), data.data(), GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
@@ -74,7 +36,7 @@ public:
 		glEnableVertexAttribArray(1);
 	}
 	~GameObject() {
-		vertices.~vector();
+		data.~vector();
 		//std::cout << "Hola se ha destruido este objeto" << std::endl;
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
@@ -84,7 +46,7 @@ public:
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 private:
-	float DEFAULT_CUBE[180] = {
+	const float DEFAULT_CUBE[180] = {
 	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
 	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -126,6 +88,23 @@ private:
 	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
 	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	};
+	const float DEFAULT_PIRAMID[4*3*5] = {
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, //frente izq;
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, //frente dcha;
+	 0.0f,  0.5f,  0.0f,  0.5f, 1.0f, //frente arriba
+
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, //frente dcha;
+	 0.0f, -0.5f, -0.5f,  1.0f, 0.0f, //no se sabe, calcular
+	 0.0f,  0.5f,  0.0f,  0.5f, 1.0f, //frente arriba
+
+	-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, //frente izq;
+	 0.0f, -0.5f, -0.5f,  0.0f, 0.0f, //no se sabe, calcular
+	 0.0f,  0.5f,  0.0f,  0.5f, 1.0f, //frente arriba
+
+	-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, //frente izq;
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, //frente dcha;
+	 0.0f, -0.5f, -0.5f,  0.5f, 1.0f, //no se sabe, calcular
 	};
 	bool LeerVerticesDeArchivo(const char* path) {
 		std::ifstream archivo;
